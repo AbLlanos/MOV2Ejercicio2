@@ -6,6 +6,7 @@ import LoginScreen from '../screen/LoginScreen';
 import PerfilScreen from '../screen/PerfilScreen';
 import RegistroScreen from '../screen/RegistroScreen';
 import { NavigationContainer } from '@react-navigation/native';
+import MenuUsuarioNavigator from './MenuUsuarioNavigator';
 
 
 const Drawer = createDrawerNavigator();
@@ -21,7 +22,13 @@ function Mydrawer() {
 
             <Drawer.Screen name='Registro' component={RegistroScreen}></Drawer.Screen>
 
-            <Drawer.Screen name='Perfil' component={PerfilScreen}></Drawer.Screen>
+            <Drawer.Screen
+                name="Perfil"
+                component={MenuUsuarioNavigator}
+                options={{
+                    drawerItemStyle: { display: 'none' }
+                }} >
+            </Drawer.Screen>
 
         </Drawer.Navigator>
 
