@@ -45,20 +45,20 @@ export default function HomeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E6F4FF', // Color claro, amigable
+    backgroundColor: '#E6F4FF',
     padding: 24,
     justifyContent: 'center',
   },
   bienvenida: {
     fontSize: 24,
     textAlign: 'center',
-    color: '#0066cc', // Azul claro
+    color: '#0066cc',
     fontWeight: '500',
   },
   title: {
     fontSize: 40,
     fontWeight: 'bold',
-    color: '#003366', // Azul oscuro
+    color: '#003366',
     textAlign: 'center',
     marginBottom: 6,
   },
