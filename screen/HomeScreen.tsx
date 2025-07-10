@@ -10,7 +10,7 @@ export default function HomeScreen({ navigation }: any) {
 
       <Image
         source={{
-          uri: 'https://cdn-icons-png.flaticon.com/512/1828/1828774.png',
+          uri: 'https://cdn-icons-png.flaticon.com/128/762/762686.png',
         }}
         style={styles.bannerImage}
       />
@@ -21,7 +21,7 @@ export default function HomeScreen({ navigation }: any) {
           onPress={() => navigation.navigate('Login')}
         >
           <Image
-            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/3917/3917132.png' }}
+            source={{ uri: 'https://cdn-icons-png.flaticon.com/128/16322/16322193.png' }}
             style={styles.image}
           />
           <Text style={styles.buttonText}>Iniciar Sesión</Text>
@@ -66,13 +66,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#0066cc',
     textAlign: 'center',
-    marginBottom: 24,
   },
   bannerImage: {
     width: 230,
     height: 230,
     alignSelf: 'center',
-    marginBottom: 30,
+    backgroundColor: "#6473d3",
+    borderRadius: 50,
+    marginVertical:20,
   },
   buttonContainer: {
     gap: 20,
@@ -90,13 +91,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   image: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
     marginRight: 12,
+    borderRadius: 5,
   },
   buttonText: {
     fontSize: 17,
     color: '#fff',
     fontWeight: '600',
+    textAlign: "center"
   },
 });

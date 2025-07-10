@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
-import { getDatabase, ref, set, get } from 'firebase/database';
 import { auth, db } from '../firebase/Config';
+import { ref, get, set } from 'firebase/database';
 
 export default function CrearTareaScreen() {
   const [titulo, setTitulo] = useState('');
@@ -9,9 +9,9 @@ export default function CrearTareaScreen() {
   const [nota, setNota] = useState('');
   const [tipoTarea, setTipoTarea] = useState('');
   const [completada, setCompletada] = useState(false);
+  const [prioridad, setPrioridad] = useState("");
 
   async function guardarTarea() {
-
     const user = auth.currentUser;
 
     if (!user) {
@@ -22,20 +22,19 @@ export default function CrearTareaScreen() {
     if (
       titulo.trim() === '' ||
       descripcion.trim() === '' ||
-      tipoTarea.trim() === ''
+      tipoTarea.trim() === '' || 
+      nota.trim() === ""||
+      prioridad.trim() === ""
     ) {
       Alert.alert("Campos obligatorios", "Por favor completa todos los campos");
       return;
     }
 
-    const userCounterRef = ref(db, `users/${user.uid}/taskCounter`);
-
     try {
-
+      const userCounterRef = ref(db, `users/${user.uid}/taskCounter`);
       const counterSnap = await get(userCounterRef);
       const contadorActual = counterSnap.exists() ? counterSnap.val() : 0;
       const nuevoContador = contadorActual + 1;
-
       const nuevoId = `task${nuevoContador}`;
 
       const nuevaTareaRef = ref(db, `users/${user.uid}/tasks/${nuevoId}`);
@@ -45,28 +44,27 @@ export default function CrearTareaScreen() {
         descripcion: descripcion,
         nota: nota,
         tipoTarea: tipoTarea,
-        completed: completada,
+        completed: false,
+        prioridad: prioridad,
         createdAt: new Date().toISOString(),
       });
 
       await set(userCounterRef, nuevoContador);
 
-      Alert.alert(`Tarea creada con ID: ${nuevoId}`, "La tarea ha sido cread");
+      Alert.alert(`Tarea creada con ID: ${nuevoId}`, "La tarea ha sido creada");
 
-      limpiarCampos()
-
+      limpiarCampos();
     } catch (error) {
       console.error(error);
       Alert.alert("Error al guardar tarea");
     }
-
   }
 
   function limpiarCampos() {
     setTitulo('');
     setDescripcion('');
     setNota('');
-    setTipoTarea('Personal');
+    setTipoTarea('');
     setCompletada(false);
   }
 
@@ -74,54 +72,46 @@ export default function CrearTareaScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Crear Nueva Tarea</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Título"
-        value={titulo}
-        onChangeText={setTitulo}
-      />
+      <View style={styles.card}>
+        <TextInput
+          style={styles.input}
+          placeholder="Título"
+          value={titulo}
+          onChangeText={(texto)=>setTitulo(texto)}
+        />
 
-      <TextInput
-        style={[styles.input, { height: 80 }]}
-        placeholder="Descripción"
-        value={descripcion}
-        onChangeText={setDescripcion}
-        multiline
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Descripción"
+          value={descripcion}
+          onChangeText={(texto)=>setDescripcion(texto)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nota (opcional)"
-        value={nota}
-        onChangeText={setNota}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Nota"
+          value={nota}
+          onChangeText={(texto)=>setNota(texto)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Tipo de Tarea"
-        value={tipoTarea}
-        onChangeText={setTipoTarea}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Tipo de Tarea"
+          value={tipoTarea}
+          onChangeText={(texto)=>setTipoTarea(texto)}
+        />
 
-      <Text style={styles.label}>¿Completada?</Text>
-      <View style={styles.row}>
-        <TouchableOpacity
-          style={[styles.radioButton, completada && styles.radioButtonSelected]}
-          onPress={() => setCompletada(true)}
-        >
-          <Text style={styles.radioText}>Sí</Text>
-        </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder="Prioridad"
+          value={prioridad}
+          onChangeText={(texto)=>setPrioridad(texto)}
+        />
 
-        <TouchableOpacity
-          style={[styles.radioButton, !completada && styles.radioButtonSelected]}
-          onPress={() => setCompletada(false)}
-        >
-          <Text style={styles.radioText}>No</Text>
+        <TouchableOpacity style={styles.button} onPress={guardarTarea}>
+          <Text style={styles.buttonText}>Guardar Tarea</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.button} onPress={guardarTarea}>
-        <Text style={styles.buttonText}>Guardar Tarea</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -130,20 +120,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
-    justifyContent: 'center'
+    backgroundColor: '#f0f8ff',
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center'
+    marginBottom: 25,
+    textAlign: 'center',
+    color: '#003366',
   },
-  label: {
-    fontWeight: '600',
-    fontSize: 16,
-    marginBottom: 8,
-    marginTop: 10
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 20,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   input: {
     height: 50,
@@ -153,24 +148,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     marginBottom: 15,
     fontSize: 16,
-  },
-  row: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 15 },
-  radioButton: {
-    borderWidth: 1,
-    borderColor: '#0066cc',
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-  },
-  radioButtonSelected: {
-    backgroundColor: '#53a3e4'
-  },
-  radioText: {
-    color: '#0066cc',
-    fontWeight: '600'
-  },
-  radioTextSelected: {
-    color: '#fff'
+    backgroundColor: '#fafafa',
   },
   button: {
     backgroundColor: '#0066cc',
@@ -179,5 +157,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
-  buttonText: { color: '#fff', fontWeight: '600', fontSize: 18 },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 18,
+  },
 });

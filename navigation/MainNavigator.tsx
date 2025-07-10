@@ -7,6 +7,8 @@ import PerfilScreen from '../screen/PerfilScreen';
 import RegistroScreen from '../screen/RegistroScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import MenuUsuarioNavigator from './MenuUsuarioNavigator';
+import { Ionicons } from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 const Drawer = createDrawerNavigator();
@@ -16,11 +18,33 @@ function Mydrawer() {
 
         <Drawer.Navigator>
 
-            <Drawer.Screen name='Home' component={HomeScreen}></Drawer.Screen>
-
-            <Drawer.Screen name='Login' component={LoginScreen}></Drawer.Screen>
-
-            <Drawer.Screen name='Registro' component={RegistroScreen}></Drawer.Screen>
+            <Drawer.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    drawerIcon: ({ color, size }) => (
+                        <Ionicons name="home-outline" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{
+                    drawerIcon: ({ color, size }) => (
+                        <MaterialIcons name="login" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Registro"
+                component={RegistroScreen}
+                options={{
+                    drawerIcon: ({ color, size }) => (
+                        <Ionicons name="person-add-outline" size={size} color={color} />
+                    ),
+                }}
+            />
 
             <Drawer.Screen
                 name="Perfil"

@@ -20,20 +20,45 @@ export default function EliminarTareaScreen() {
 
     try {
       const tareaRef = ref(db, `users/${user.uid}/tasks/${taskId}`);
-      const snapshot = await get(tareaRef); // <-- CORRECTO
+      const snapshot = await get(tareaRef);
 
       if (!snapshot.exists()) {
         Alert.alert('No encontrado', 'No existe tarea con ese ID para este usuario');
         return;
       }
 
-      await remove(tareaRef);
+      Alert.alert(
+        'Confirmar eliminación',
+        `¿Estás seguro que deseas eliminar la tarea "${taskId}"?`,
+        [
+          {
+            text: 'Cancelar',
+          },
+          {
+            text: 'Aceptar',
 
-      Alert.alert('Éxito', `Tarea ${taskId} eliminada correctamente`);
-      setTaskId('');
+
+            onPress: async () => {
+              try {
+
+                await remove(tareaRef);
+                Alert.alert('Éxito', `Tarea "${taskId}" eliminada correctamente`);
+                setTaskId('');
+
+              } catch (error) {
+
+                console.error(error);
+                Alert.alert('Error', 'No se pudo eliminar la tarea');
+
+              }
+
+            },
+          },
+        ]
+      );
     } catch (error) {
       console.error(error);
-      Alert.alert('Error', 'No se pudo eliminar la tarea');
+      Alert.alert('Error', 'Ocurrió un problema al intentar eliminar la tarea');
     }
   };
 
@@ -41,23 +66,46 @@ export default function EliminarTareaScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Eliminar Tarea por ID</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="ID de la tarea (ej: task1)"
-        value={taskId}
-        onChangeText={setTaskId}
-      />
+      <View style={styles.card}>
+        <TextInput
+          style={styles.input}
+          placeholder="ID de la tarea"
+          value={taskId}
+          onChangeText={setTaskId}
+        />
 
-      <TouchableOpacity style={styles.button} onPress={eliminarTarea}>
-        <Text style={styles.buttonText}>Eliminar</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={eliminarTarea}>
+          <Text style={styles.buttonText}>Eliminar</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, justifyContent: 'center', backgroundColor: '#fff' },
-  title: { fontSize: 26, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    backgroundColor: '#f0f8ff',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 25,
+    textAlign: 'center',
+    color:"#003366",
+  },
+  card: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   input: {
     height: 50,
     borderColor: '#ccc',
@@ -73,5 +121,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
-  buttonText: { color: '#fff', fontWeight: '600', fontSize: 18 },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 18,
+  },
 });
+

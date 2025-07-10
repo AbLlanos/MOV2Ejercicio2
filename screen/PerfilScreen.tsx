@@ -11,7 +11,7 @@ export default function PerfilScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    
+
     const user = auth.currentUser;
 
     if (user) {
@@ -36,20 +36,22 @@ export default function PerfilScreen({ navigation }: any) {
     await signOut(auth);
     navigation.navigate('Login');
   };
-  
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Perfil del Usuario</Text>
 
-      <Text style={styles.label}>Nombre:</Text>
-      <Text style={styles.text}>{nombre}</Text>
+      <View style={styles.card}>
+        <Text style={styles.label}>Nombre:</Text>
+        <Text style={styles.text}>{nombre}</Text>
 
-      <Text style={styles.label}>Edad:</Text>
-      <Text style={styles.text}>{edad}</Text>
+        <Text style={styles.label}>Edad:</Text>
+        <Text style={styles.text}>{edad}</Text>
 
-      <Text style={styles.label}>Correo electrónico:</Text>
-      <Text style={styles.text}>{email}</Text>
+        <Text style={styles.label}>Correo electrónico:</Text>
+        <Text style={styles.text}>{email}</Text>
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={cerrarSesion}>
         <Text style={styles.buttonText}>Cerrar sesión</Text>
@@ -63,29 +65,42 @@ const styles = StyleSheet.create({
     padding: 25,
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#f0f8ff',
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 30,
     textAlign: 'center',
+    color: '#003366',
+
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    marginBottom: 30,
   },
   label: {
     fontSize: 16,
     fontWeight: '600',
     marginTop: 10,
+    color: '#555',
   },
   text: {
     fontSize: 16,
     marginBottom: 10,
-    color: '#333',
+    color: '#222',
   },
   button: {
-    marginTop: 40,
     backgroundColor: '#cc0000',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
   },
   buttonText: {
